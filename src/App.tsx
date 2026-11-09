@@ -11,6 +11,7 @@ import { runHealthAssessment } from './engine/assessmentEngine';
 import { Header } from './components/Header';
 import { ProgressBar } from './components/ProgressBar';
 import { WelcomeScreen } from './components/WelcomeScreen';
+import { SplashScreen } from './components/SplashScreen';
 import { PersonalInfoScreen } from './components/PersonalInfoScreen';
 import { HealthInfoScreen } from './components/HealthInfoScreen';
 import { EmergencyScreen } from './components/EmergencyScreen';
@@ -20,6 +21,7 @@ import { PrivacyModal } from './components/PrivacyModal';
 type AppStep = 'welcome' | 'personal' | 'health' | 'emergency' | 'report';
 
 export function App() {
+  const [showSplash, setShowSplash] = useState<boolean>(true);
   const [currentStep, setCurrentStep] = useState<AppStep>('welcome');
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState<boolean>(false);
 
@@ -35,11 +37,11 @@ export function App() {
     bodyTemperature: 98.6,
     temperatureUnit: 'fahrenheit',
     temperatureUnknown: false,
-    bpSystolic: 120,
-    bpDiastolic: 80,
-    bpUnknown: false,
-    heartRate: 72,
-    heartRateUnknown: false,
+    bpSystolic: null,
+    bpDiastolic: null,
+    bpUnknown: true,
+    heartRate: null,
+    heartRateUnknown: true,
     spo2: null,
     bloodGlucose: null,
   });
@@ -83,9 +85,9 @@ export function App() {
       temperatureUnknown: false,
       bpSystolic: null,
       bpDiastolic: null,
-      bpUnknown: false,
+      bpUnknown: true,
       heartRate: null,
-      heartRateUnknown: false,
+      heartRateUnknown: true,
       spo2: null,
       bloodGlucose: null,
     });
@@ -167,6 +169,9 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+      {/* Intro Splash Screen Animation */}
+      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
+
       {/* Top Header */}
       <Header
         onOpenPrivacy={() => setIsPrivacyModalOpen(true)}
@@ -235,7 +240,7 @@ export function App() {
       <footer className="w-full bg-white border-t border-slate-200 py-6 px-4 mt-auto">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 text-center sm:text-left">
           <div>
-            <span className="font-bold text-slate-700">ग्रामसेवक (GRAMSEVAK)</span> — ग्रामीण स्वास्थ्य सहायता एवं प्राथमिक जोखिम मूल्यांकन मंच
+            <span className="font-bold text-slate-700">स्वास्थ्यसाथी (SWASTHYASATHI)</span> — ग्रामीण स्वास्थ्य सहायता एवं प्राथमिक जोखिम मूल्यांकन मंच
           </div>
           <div className="flex items-center gap-4">
             <button

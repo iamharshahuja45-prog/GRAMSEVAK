@@ -10,14 +10,10 @@ import {
 import { SYMPTOM_LIST } from '../data/symptoms';
 import {
   isPhysiologicallyPlausibleTemperature,
-  validateBloodPressure,
-  validateHeartRate,
   toFahrenheit,
 } from '../utils/conversions';
 import {
   Thermometer,
-  Activity,
-  Heart,
   Droplet,
   Info,
   AlertCircle,
@@ -89,25 +85,6 @@ export const HealthInfoScreen: React.FC<HealthInfoScreenProps> = ({
     initialMeasurements.temperatureUnknown || false
   );
 
-  // Blood Pressure
-  const [bpSystolicStr, setBpSystolicStr] = useState<string>(
-    initialMeasurements.bpSystolic !== null ? initialMeasurements.bpSystolic.toString() : '120'
-  );
-  const [bpDiastolicStr, setBpDiastolicStr] = useState<string>(
-    initialMeasurements.bpDiastolic !== null ? initialMeasurements.bpDiastolic.toString() : '80'
-  );
-  const [bpUnknown, setBpUnknown] = useState<boolean>(
-    initialMeasurements.bpUnknown || false
-  );
-
-  // Heart Rate
-  const [heartRateStr, setHeartRateStr] = useState<string>(
-    initialMeasurements.heartRate !== null ? initialMeasurements.heartRate.toString() : '72'
-  );
-  const [heartRateUnknown, setHeartRateUnknown] = useState<boolean>(
-    initialMeasurements.heartRateUnknown || false
-  );
-
   // Optional Measurements
   const [spo2Str, setSpo2Str] = useState<string>(
     initialMeasurements.spo2 !== null ? initialMeasurements.spo2.toString() : ''
@@ -121,8 +98,6 @@ export const HealthInfoScreen: React.FC<HealthInfoScreenProps> = ({
     symptoms?: string;
     duration?: string;
     temperature?: string;
-    bp?: string;
-    heartRate?: string;
     spo2?: string;
     glucose?: string;
   }>({});
@@ -153,8 +128,6 @@ export const HealthInfoScreen: React.FC<HealthInfoScreenProps> = ({
       symptoms?: string;
       duration?: string;
       temperature?: string;
-      bp?: string;
-      heartRate?: string;
       spo2?: string;
       glucose?: string;
     } = {};
@@ -193,27 +166,6 @@ export const HealthInfoScreen: React.FC<HealthInfoScreenProps> = ({
       }
     }
 
-    // Validate Blood Pressure
-    if (!bpUnknown) {
-      const s = bpSystolicStr.trim() ? parseFloat(bpSystolicStr) : null;
-      const d = bpDiastolicStr.trim() ? parseFloat(bpDiastolicStr) : null;
-      const bpCheck = validateBloodPressure(s, d);
-      if (!bpCheck.isValid) {
-        newErrors.bp = bpCheck.errorHindi;
-      }
-    }
-
-    // Validate Heart Rate
-    if (!heartRateUnknown) {
-      if (heartRateStr.trim()) {
-        const hr = parseFloat(heartRateStr);
-        const hrCheck = validateHeartRate(hr);
-        if (!hrCheck.isValid) {
-          newErrors.heartRate = hrCheck.errorHindi;
-        }
-      }
-    }
-
     // Validate optional SpO2
     if (spo2Str.trim()) {
       const sp = parseFloat(spo2Str);
@@ -239,9 +191,6 @@ export const HealthInfoScreen: React.FC<HealthInfoScreenProps> = ({
     if (!validate()) return;
 
     const parsedTemp = !tempUnknown && tempStr.trim() ? parseFloat(tempStr) : null;
-    const parsedSystolic = !bpUnknown && bpSystolicStr.trim() ? parseFloat(bpSystolicStr) : null;
-    const parsedDiastolic = !bpUnknown && bpDiastolicStr.trim() ? parseFloat(bpDiastolicStr) : null;
-    const parsedHeartRate = !heartRateUnknown && heartRateStr.trim() ? parseFloat(heartRateStr) : null;
     const parsedSpo2 = spo2Str.trim() ? parseFloat(spo2Str) : null;
     const parsedGlucose = glucoseStr.trim() ? parseFloat(glucoseStr) : null;
     const parsedDuration = !hasNoSymptoms && durationValueStr.trim() ? parseFloat(durationValueStr) : null;
@@ -258,11 +207,11 @@ export const HealthInfoScreen: React.FC<HealthInfoScreenProps> = ({
       bodyTemperature: parsedTemp,
       temperatureUnit: tempUnit,
       temperatureUnknown: tempUnknown,
-      bpSystolic: parsedSystolic,
-      bpDiastolic: parsedDiastolic,
-      bpUnknown: bpUnknown,
-      heartRate: parsedHeartRate,
-      heartRateUnknown: heartRateUnknown,
+      bpSystolic: null,
+      bpDiastolic: null,
+      bpUnknown: true,
+      heartRate: null,
+      heartRateUnknown: true,
       spo2: parsedSpo2,
       bloodGlucose: parsedGlucose,
     };
@@ -518,127 +467,7 @@ export const HealthInfoScreen: React.FC<HealthInfoScreenProps> = ({
             )}
           </div>
 
-          {/* Card D: Blood Pressure */}
-          <div className="p-4 sm:p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
-                <Activity className="w-4 h-4 text-emerald-600" />
-                <span>रक्तचाप (Blood Pressure - BP)</span>
-              </label>
-              <button
-                type="button"
-                onClick={() => setBpUnknown(!bpUnknown)}
-                className={`text-xs px-2.5 py-1 rounded-lg border font-medium transition-all ${
-                  bpUnknown
-                    ? 'bg-amber-100 text-amber-900 border-amber-300'
-                    : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
-                }`}
-              >
-                मुझे अपना BP नहीं पता
-              </button>
-            </div>
-
-            {!bpUnknown ? (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <div className="flex-1">
-                    <span className="text-[11px] font-semibold text-slate-600 block mb-1">
-                      ऊपर का दबाव (Systolic)
-                    </span>
-                    <input
-                      type="number"
-                      value={bpSystolicStr}
-                      onChange={(e) => setBpSystolicStr(e.target.value)}
-                      placeholder="120"
-                      className="w-full px-3 py-2 rounded-xl bg-white border border-slate-300 text-sm font-semibold text-slate-800 focus:border-emerald-600 outline-none"
-                    />
-                  </div>
-                  <span className="text-xl font-bold text-slate-400 mt-4">/</span>
-                  <div className="flex-1">
-                    <span className="text-[11px] font-semibold text-slate-600 block mb-1">
-                      नीचे का दबाव (Diastolic)
-                    </span>
-                    <input
-                      type="number"
-                      value={bpDiastolicStr}
-                      onChange={(e) => setBpDiastolicStr(e.target.value)}
-                      placeholder="80"
-                      className="w-full px-3 py-2 rounded-xl bg-white border border-slate-300 text-sm font-semibold text-slate-800 focus:border-emerald-600 outline-none"
-                    />
-                  </div>
-                  <span className="text-xs text-slate-500 font-bold mt-4">mmHg</span>
-                </div>
-                <p className="text-[11px] text-slate-500">
-                  * शांत बैठकर 5 मिनट विश्राम के बाद नापा गया बीपी सबसे सटीक होता है।
-                </p>
-              </div>
-            ) : (
-              <p className="text-xs text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
-                बीपी की अनुपस्थिति में प्रणाली इसे सामान्य नहीं मानेगी और डॉक्टर से बीपी नपवाने की सलाह जोड़ेगी।
-              </p>
-            )}
-
-            {errors.bp && (
-              <p className="text-xs text-red-600 flex items-center gap-1 font-medium">
-                <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
-                <span>{errors.bp}</span>
-              </p>
-            )}
-          </div>
-
-          {/* Card E: Heart Rate */}
-          <div className="p-4 sm:p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
-                <Heart className="w-4 h-4 text-emerald-600" />
-                <span>हृदय गति (नाड़ी दर / Heart Rate)</span>
-              </label>
-              <button
-                type="button"
-                onClick={() => setHeartRateUnknown(!heartRateUnknown)}
-                className={`text-xs px-2.5 py-1 rounded-lg border font-medium transition-all ${
-                  heartRateUnknown
-                    ? 'bg-amber-100 text-amber-900 border-amber-300'
-                    : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
-                }`}
-              >
-                मुझे नहीं पता
-              </button>
-            </div>
-
-            {!heartRateUnknown ? (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    value={heartRateStr}
-                    onChange={(e) => setHeartRateStr(e.target.value)}
-                    placeholder="72"
-                    className="w-36 px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-sm font-semibold text-slate-800 focus:border-emerald-600 outline-none"
-                  />
-                  <span className="text-xs text-slate-600 font-semibold">
-                    धड़कन प्रति मिनट (bpm)
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-500">
-                  * कलाई पर अंगूठे के नीचे उंगली रखकर 1 मिनट में धड़कनों की संख्या गिनें।
-                </p>
-              </div>
-            ) : (
-              <p className="text-xs text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
-                हृदय गति दर्ज न होने पर इसे सामान्य नहीं माना जाएगा।
-              </p>
-            )}
-
-            {errors.heartRate && (
-              <p className="text-xs text-red-600 flex items-center gap-1 font-medium">
-                <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
-                <span>{errors.heartRate}</span>
-              </p>
-            )}
-          </div>
-
-          {/* Card F: Optional SpO2 & Glucose */}
+          {/* Card D: Optional SpO2 & Glucose */}
           <div className="p-4 sm:p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-sm font-bold text-slate-800">

@@ -1,4 +1,4 @@
-// Type definitions for GRAMSEVAK (ग्रामसेवक)
+// Type definitions for SWASTHYASATHI (स्वास्थ्यसाथी)
 
 export type Gender = 'male' | 'female' | 'transgender';
 

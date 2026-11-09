@@ -16,12 +16,6 @@ export function runHealthAssessment(input: UserAssessmentInput): AssessmentResul
   if (input.health.temperatureUnknown || input.health.bodyTemperature === null) {
     missingInformation.push('शरीर का तापमान नहीं नापा गया है');
   }
-  if (input.health.bpUnknown || input.health.bpSystolic === null || input.health.bpDiastolic === null) {
-    missingInformation.push('रक्तचाप (BP) की जाँच नहीं की गई है');
-  }
-  if (input.health.heartRateUnknown || input.health.heartRate === null) {
-    missingInformation.push('हृदय गति (नाड़ी दर) दर्ज नहीं की गई है');
-  }
 
   // Evaluate all rules
   let overallUrgency: UrgencyLevel = 'GREEN';

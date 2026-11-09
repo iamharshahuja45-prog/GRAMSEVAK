@@ -29,7 +29,7 @@ export const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) =
               आपकी गोपनीयता एवं डेटा सुरक्षा
             </h3>
             <p className="text-xs text-slate-500">
-              ग्रामसेवक मंच पर आपकी निजी जानकारी पूरी तरह सुरक्षित है
+              स्वास्थ्यसाथी (SWASTHYASATHI) मंच पर आपकी निजी जानकारी पूरी तरह सुरक्षित है
             </p>
           </div>
         </div>
@@ -40,7 +40,7 @@ export const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) =
             <div>
               <strong className="text-emerald-900">कोई अनिवार्य पंजीकरण नहीं:</strong>
               <p className="mt-0.5 text-emerald-800">
-                ग्रामसेवक का उपयोग करने के लिए कोई मोबाइल नंबर, आधार या खाता बनाने की आवश्यकता नहीं है। आप नाम भी खाली छोड़ सकते हैं।
+                स्वास्थ्यसाथी (SWASTHYASATHI) का उपयोग करने के लिए कोई मोबाइल नंबर, आधार या खाता बनाने की आवश्यकता नहीं है। आप नाम भी खाली छोड़ सकते हैं।
               </p>
             </div>
           </div>

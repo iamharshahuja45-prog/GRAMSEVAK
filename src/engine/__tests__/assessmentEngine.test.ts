@@ -45,7 +45,7 @@ const createDefaultInput = (): UserAssessmentInput => ({
   },
 });
 
-describe('ग्रामसेवक (GRAMSEVAK) Clinical Safety & Assessment Engine', () => {
+describe('स्वास्थ्यसाथी (SWASTHYASATHI) Clinical Safety & Assessment Engine', () => {
   // Scenario 1: No symptoms and normal measurements -> GREEN
   it('Scenario 1: No symptoms and normal measurements results in GREEN with routine guidance', () => {
     const input = createDefaultInput();
@@ -170,19 +170,15 @@ describe('ग्रामसेवक (GRAMSEVAK) Clinical Safety & Assessment E
     expect(result.triggeredRuleIds).toContain('PREGNANCY_WITH_SYMPTOMS');
   });
 
-  // Scenario 11: Missing BP and heart-rate measurements -> transparent missing info
-  it('Scenario 11: Missing BP and pulse measurements are explicitly acknowledged in result', () => {
+  // Scenario 11: Missing vital signs -> transparent missing info
+  it('Scenario 11: Missing vital signs are explicitly acknowledged in result', () => {
     const input = createDefaultInput();
-    input.health.bpUnknown = true;
-    input.health.bpSystolic = null;
-    input.health.bpDiastolic = null;
-    input.health.heartRateUnknown = true;
-    input.health.heartRate = null;
+    input.health.temperatureUnknown = true;
+    input.health.bodyTemperature = null;
     input.symptoms.primarySymptoms = ['headache'];
 
     const result = runHealthAssessment(input);
-    expect(result.missingInformation).toContain('रक्तचाप (BP) की जाँच नहीं की गई है');
-    expect(result.missingInformation).toContain('हृदय गति (नाड़ी दर) दर्ज नहीं की गई है');
+    expect(result.missingInformation).toContain('शरीर का तापमान नहीं नापा गया है');
     expect(result.uncertaintyExplanationHindi).toBeDefined();
   });
 
@@ -190,9 +186,8 @@ describe('ग्रामसेवक (GRAMSEVAK) Clinical Safety & Assessment E
   it('Scenario 12: No symptoms reported with missing vitals clarifies uncertainty', () => {
     const input = createDefaultInput();
     input.symptoms.primarySymptoms = ['no_symptoms'];
-    input.health.bpUnknown = true;
-    input.health.bpSystolic = null;
-    input.health.bpDiastolic = null;
+    input.health.temperatureUnknown = true;
+    input.health.bodyTemperature = null;
 
     const result = runHealthAssessment(input);
     expect(result.urgency).toBe('GREEN');

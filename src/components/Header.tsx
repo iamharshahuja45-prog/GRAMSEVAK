@@ -17,7 +17,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacy, onReset }) => {
           role="button"
           tabIndex={0}
           onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onReset()}
-          aria-label="ग्रामसेवक मुख्य पृष्ठ"
+          aria-label="स्वास्थ्यसाथी मुख्य पृष्ठ"
         >
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-600 to-green-700 text-white flex items-center justify-center shadow-md shadow-emerald-200 group-hover:scale-105 transition-transform">
             <HeartPulse className="w-6 h-6" />
@@ -25,10 +25,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPrivacy, onReset }) => {
           <div>
             <div className="flex items-center gap-1.5">
               <span className="text-xl font-black text-slate-900 tracking-tight">
-                ग्रामसेवक
+                स्वास्थ्यसाथी
               </span>
               <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-md">
-                स्वास्थ्य सेवा
+                SWASTHYASATHI
               </span>
             </div>
             <p className="text-[11px] text-slate-500 hidden sm:block">
