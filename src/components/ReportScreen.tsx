@@ -51,15 +51,12 @@ export const ReportScreen: React.FC<ReportScreenProps> = ({
     if (!found) return;
 
     const existing = regionMap.get(found.bodyRegion) || {
-      urgency: 'YELLOW',
+      urgency: 'RED',
       names: [],
     };
 
-    if (result.isEmergency && found.isEmergencyPotential) {
-      existing.urgency = 'RED';
-    } else if (result.urgency === 'RED') {
-      existing.urgency = 'RED';
-    }
+    // Any harmed body part turns into RED zone
+    existing.urgency = 'RED';
 
     existing.names.push(found.hindiName);
     regionMap.set(found.bodyRegion, existing);
